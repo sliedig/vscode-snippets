@@ -1,0 +1,64 @@
+{
+	// Place your global snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+
+
+	"globals": {
+		"scope": "yaml",
+		"prefix": "sam-globals",
+		"body": [
+			"Globals:\n\t\t\tFunction:\n\t\t\t\tRuntime: nodejs6.10\n\t\t\t\tTimeout: 180\n\t\t\t\tHandler: index.handler\n\t\t\t\tEnvironment:\n\t\t\t\t\tVariables:\n\t\t\t\t\t\tTABLE_NAME: data-table\n\t\t\tApi:\n\t\t\t\tEndpointConfiguration: REGIONAL\n\t\t\t\tCors: \"'www.example.com'\"\n\t\t\n\t\t\tSimpleTable:\n\t\t\t\tSSESpecification:\n\t\t\t\t\tSSEEnabled: true"
+		],
+		"description": "SAM Globals section"
+	},
+
+	"function": {
+		"scope": "yaml",
+		"prefix": "sam-function",
+		"body": [
+		"# https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction\nLambdaFunction:\n\tType: AWS::Serverless::Function\n\tProperties:\n\t\tHandler: index.js\n\t\tRuntime: ${1|nodejs,nodejs4.3,nodejs6.10,nodejs8.10,java8,python2.7,python3.6,dotnetcore1.0,dotnetcore2.0,dotnetcore2.1,nodejs4.3-edge,go1.x|}\n\t\tCodeUri: './artefacts/my-function.zip'\n\t\tDescription: Creates thumbnails of uploaded images\n\t\tMemorySize: 1024\n\t\tTimeout: 15\n\t\tTracing: true\n\t\tPolicies:\n\t\t- AWSLambdaExecute # Managed Policy\n\t\t- Version: '2012-10-17' # Policy Document\n\t\t\tStatement:\n\t\t\t\t- Effect: Allow\n\t\t\t\t\tAction:\n\t\t\t\t\t\t- s3:GetObject\n\t\t\t\t\t\t- s3:GetObjectACL\n\t\t\t\t\tResource: 'arn:aws:s3:::my-bucket/*'\n\t\tEnvironment:\n\t\t\tVariables:\n\t\t\t\tTABLE_NAME: my-table\n\t\tEvents:\n\t\t\tPhotoUpload:\n\t\t\t\tType: S3\n\t\t\t\tProperties:\n\t\t\t\t\tBucket: my-photo-bucket\n\t\tTags:\n\t\t\tenvironment: ${3|dev,test,prod|}\n\t\t\tproject: proj123\n\t\t\tcostcentre: abc123"			
+		],
+		"description": "AWS::Serverless::Function"
+	},
+
+	"api": {
+		"scope": "yaml",
+		"prefix": "sam-api",
+		"body": [
+		"#https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessapi\nApiGatewayApi:\n\tType: AWS::Serverless::Api\n\tProperties:\n\t\tStageName: Prod\n\t\tDefinitionUri: swagger.yml"
+		],
+		"description": "AWS::Serverless::Api"
+	},
+
+	"simpletable": {
+		"scope": "yaml",
+		"prefix": "sam-simpletable",
+		"body": [
+		"#https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable\nSimpleTable:\n\tType: AWS::Serverless::SimpleTable\n\tProperties:\n\t\tTableName: $1\n\t\tPrimaryKey:\n\t\t\tName: id\n\t\t\tType: String\n\t\tProvisionedThroughput:\n\t\t\tReadCapacityUnits: 5\n\t\t\tWriteCapacityUnits: 5\n\t\tTags:\n\t\t\tenvironment: ${3|dev,test,prod|}\n\t\t\tproject: proj123\n\t\t\tcostcentre: abc123\n\t\tSSESpecification:\n\t\t\tSSEEnabled: true"
+			],
+		"description": "AWS::Serverless::SimpleTable"
+	},
+
+	"sam-template": {
+		"scope": "yaml",
+		"prefix": "sam-template",
+		"body": [
+		"AWSTemplateFormatVersion: '2010-09-09'\nTransform: 'AWS::Serverless-2016-10-31'\nResources:\n\t\t$1"
+			],
+		"description": "SAM Template"
+	},
+}

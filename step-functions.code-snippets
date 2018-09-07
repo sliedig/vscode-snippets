@@ -1,0 +1,107 @@
+{
+	// Place your global snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	"StepHelloWorld": {
+		"scope": "json",
+		"prefix": "sfn-new",
+		"body": [
+			"{\n\t\"Comment\": \"\",\n\t\"StartAt\": \"$1\",\n\t\"States\": {\n    $0\n\t\t}\n\t}"
+		],
+		"description": "New State Machine"
+	},
+
+	"PassState": {
+		"scope": "json",
+		"prefix": "sfn-pass",
+		"body": [
+			"\"$1\": {\n  \"Type\": \"Pass\",\t  \n  \"Result\": {\n    \"x-datum\": 0.381018,\n    \"y-datum\": 622.2269926397355\n  },\n  \"ResultPath\": \"$.coords\",\n  \"Next\": \"$2\"\n}"	
+		],
+		"description": "Step Function Pass State"
+	},	
+
+	"TaskState": {
+		"scope": "json",
+		"prefix": "sfn-task",
+		"body": [
+			"\"$1\": {\n  \"Comment\": \"Add comment...\",\n  \"Type\": \"Task\",\n  \"Resource\": \"$2\",\n  \"Next\": \"$3\",\n  \"TimeoutSeconds\": 300,\n  \"HeartbeatSeconds\": 60\n}"	
+		],
+		"description": "Step Function Task State"
+	},
+
+	"TaskStateRetryField": {
+		"scope": "json",
+		"prefix": "sfn-task-retry",
+		"body": [
+			"\"Retry\": [\n  {\n    \"ErrorEquals\": [\"${1|CustomError,States.ALL,States.Timeout,States.TaskFailed,States.Permissions,States.ResultPathMatchFailure,States.BranchFailed,States.NoChoiceMatched|}\"],\n    \"IntervalSeconds\": 1,\n    \"MaxAttempts\": 2,\n    \"BackoffRate\": 2.0\n  },\n  {\n    \"ErrorEquals\": [\"${2|CustomError,States.ALL,States.Timeout,States.TaskFailed,States.Permissions,States.ResultPathMatchFailure,States.BranchFailed,States.NoChoiceMatched|}\"],\n    \"IntervalSeconds\": 30,\n    \"MaxAttempts\": 2,\n    \"BackoffRate\": 2.0\n  },\n  {\n    \"ErrorEquals\": [\"${3|CustomError,States.ALL,States.Timeout,States.TaskFailed,States.Permissions,States.ResultPathMatchFailure,States.BranchFailed,States.NoChoiceMatched|}\"],\n    \"IntervalSeconds\": 5,\n    \"MaxAttempts\": 5,\n    \"BackoffRate\": 2.0\n  }\n]"	
+		],
+		"description": "Step Function Task Retry field"
+	},
+
+	"TaskStateCatchField": {
+		"scope": "json",
+		"prefix": "sfn-task-catch",
+		"body": [
+			"\"Catch\": [\n  {\n    \"ErrorEquals\": [\"${1|CustomError,States.ALL,States.Timeout,States.TaskFailed,States.Permissions,States.ResultPathMatchFailure,States.BranchFailed,States.NoChoiceMatched|}\"],\n    \"Next\": \"$2\"\n  },\n  {\n    \"ErrorEquals\": [\"${3|CustomError,States.ALL,States.Timeout,States.TaskFailed,States.Permissions,States.ResultPathMatchFailure,States.BranchFailed,States.NoChoiceMatched|}\"],\n    \"Next\": \"$4\"\n  },\n  {\n    \"ErrorEquals\": [\"${5|CustomError,States.ALL,States.Timeout,States.TaskFailed,States.Permissions,States.ResultPathMatchFailure,States.BranchFailed,States.NoChoiceMatched|}\"],\n    \"Next\": \"$6\"\n  }\n]"	
+		],
+		"description": "Step Function Task Catch field"
+	},	
+	
+	"StepWaitTimestamp": {
+		"scope": "json",
+		"prefix": "sfn-wait-tsp",
+		"body": [
+			"\"$1\": {\n  \"Type\": \"Wait\",\n  \"TimestampPath\": \"$.$2\",\n  \"Next\": \"$3\"\n}"
+		],
+		"description": "Step Function Wait State using Timestamp Path"
+	},
+
+	"StepWaitSeconds": {
+		"scope": "json",
+		"prefix": "sfn-wait-secp",
+		"body": [
+			"\"$1\": {\n  \"Type\": \"Wait\",\n  \"SecondsPath\": \"$.$2\",\n  \"Next\": \"$3\"\n}"
+		],
+		"description": "Step Function Wait State using Seconds Path"
+	},
+
+	"StepParallel": {
+		"scope": "json",
+		"prefix": "sfn-parallel",
+		"body": [
+			"\"$1\": {\n  \"Type\": \"Parallel\",\n  \"Branches\": [\n    {\n      \"StartAt\": \"${1:State1}\",\n      \"States\": {\n        \"${1:State1}\": {\n          \"Type\": \"Task\",\n          \"Resource\": \"$2\",\n          \"End\": true\n        }\n      }\n    },\n    {\n      \"StartAt\": \"${3:State2}\",\n      \"States\": {\n        \"${3:State2}\": {\n          \"Type\": \"Task\",\n          \"Resource\": \"$4\",\n          \"End\": true\n        }\n      }\n    }\n  ],\n  \"Next\": \"$5\"\n}"
+		],
+		"description": "Step Function Wait State using Seconds Path"
+	},
+
+	"StepFail": {
+		"scope": "json",
+		"prefix": "sfn-fail",
+		"body": [
+			"\"$1\": {\n  \"Type\": \"Fail\",\n  \"Error\": \"$2\",\n  \"Cause\": \"$3\"\n}"
+		],
+		"description": "Step Function Wait State using Seconds Path"
+	},
+
+	"StepSucceed": {
+		"scope": "json",
+		"prefix": "sfn-succeed",
+		"body": [
+			"\"$1\": {\n  \"Type\": \"Succeed\"\n}"
+		],
+		"description": "Step Function Wait State using Seconds Path"
+	},	
+
+	"ChoiceState": {
+		"scope": "json",
+		"prefix": "sfn-choice",
+		"body": [
+			"\"$1\": {\n  \"Type\" : \"Choice\",\n  \"Choices\": [\n    {\n        \"Not\": {\n          \"Variable\": \"$.type\",\n          \"StringEquals\": \"Private\"\n        },\n        \"Next\": \"NextState....\"\n    },\n    {\n      \"And\": [\n        {\n          \"Variable\": \"$.value\",\n          \"NumericGreaterThanEquals\": 20\n        },\n        {\n          \"Variable\": \"$.value\",\n          \"NumericLessThan\": 30\n        }\n      ],\n      \"Next\": \"NextState....\"\n    }\n  ],\n  \"Default\": \"DefaultState...\"\n}"
+		], 
+		"description": "Step Function Wait State"
+	}
+}
