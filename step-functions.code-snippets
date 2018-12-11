@@ -28,7 +28,7 @@
 		"scope": "json",
 		"prefix": "sfn-task",
 		"body": [
-			"\"$1\": {\n  \"Comment\": \"Add comment...\",\n  \"Type\": \"Task\",\n  \"Resource\": \"$2\",\n  \"Next\": \"$3\",\n  \"TimeoutSeconds\": 300,\n  \"HeartbeatSeconds\": 60\n}"	
+			"\"$1\": {\n  \"Comment\": \"Add comment...\",\n  \"Type\": \"Task\",\n  \"Resource\": \"$2\",\n  \"Next\": \"$3\",\n  \"TimeoutSeconds\": 300,\n  \"HeartbeatSeconds\": 60,\n  \"End\": false\n  }\n}"	
 		],
 		"description": "Step Function Task State"
 	},
@@ -103,5 +103,41 @@
 			"\"$1\": {\n  \"Type\" : \"Choice\",\n  \"Choices\": [\n    {\n        \"Not\": {\n          \"Variable\": \"$.type\",\n          \"StringEquals\": \"Private\"\n        },\n        \"Next\": \"NextState....\"\n    },\n    {\n      \"And\": [\n        {\n          \"Variable\": \"$.value\",\n          \"NumericGreaterThanEquals\": 20\n        },\n        {\n          \"Variable\": \"$.value\",\n          \"NumericLessThan\": 30\n        }\n      ],\n      \"Next\": \"NextState....\"\n    }\n  ],\n  \"Default\": \"DefaultState...\"\n}"
 		], 
 		"description": "Step Function Wait State"
+	},
+
+	"BatchState": {
+		"scope": "json",
+		"prefix": "sfn-batch",
+		"body": [
+			"\"$1\": {\n      \"Comment\": \"Add comment...\",\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:states:::batch:submitJob.sync\",\n      \"Parameters\": {\n        \"JobName\": \"$2\",\n        \"JobQueue\": \"<BATCH_QUEUE_ARN>\",\n        \"JobDefinition\": \"<BATCH_JOB_DEFINITION_ARN>\"\n      },\n      \"Next\": \"$3\",\n      \"TimeoutSeconds\": 300,\n      \"HeartbeatSeconds\": 60\n    }"
+		], 
+		"description": "Step Function Batch Task"
+	},
+
+	"SQSState": {
+		"scope": "json",
+		"prefix": "sfn-sqs",
+		"body": [
+			"\"$1\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:states:::sqs:sendMessage\",\n      \"Parameters\": {\n        \"MessageBody.$\": \"$2\",\n        \"QueueUrl\": \"<SQS_QUEUE_URL>\"\n      },\n      \"ResultPath\": \"$.SQS\",\n      \"Next\": \"$3\",\n    \"End\": false\n  }"
+		], 
+		"description": "Step Function SQS Task"
+	},
+
+	"SNSState": {
+		"scope": "json",
+		"prefix": "sfn-sns",
+		"body": [
+			"\"$1\": {\n    \"Type\": \"Task\",\n    \"Resource\": \"arn:aws:states:::sns:publish\",\n    \"Parameters\": {\n      \"Message\": \"$2\",\n      \"TopicArn\": \"<SNS_TOPIC_ARN>\"\n    },\n    \"Next\": \"$3\",\n    \"End\": false\n  }"
+		], 
+		"description": "Step Function SNS Task"
+	},
+
+	"FargateState": {
+		"scope": "json",
+		"prefix": "sfn-fargate",
+		"body": [
+			"\"$1\": {\n      \"Comment\": \"Add comment...\",\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:states:::ecs:runTask.sync\",\n      \"Parameters\": {\n        \"LaunchType\": \"FARGATE\",\n        \"Cluster\": \"<ECS_CLUSTER_ARN>\",\n        \"TaskDefinition\": \"<ECS_TASK_DEFINITION_ARN>\",\n        \"NetworkConfiguration\": {\n          \"AwsvpcConfiguration\": {\n            \"Subnets\": [\n              \"${subnetAz1}\",\n              \"${subnetAz2}\"\n            ],\n            \"AssignPublicIp\": \"ENABLED\"\n          }\n        }\n      },\n      \"Next\": \"$2\",\n      \"TimeoutSeconds\": 300,\n      \"HeartbeatSeconds\": 60\n    }"
+		], 
+		"description": "Step Function Fargate Task"
 	}
 }
