@@ -21,7 +21,7 @@
 		"scope": "yaml",
 		"prefix": "sam-globals",
 		"body": [
-			"Globals:\n\t\t\tFunction:\n\t\t\t\tRuntime: nodejs6.10\n\t\t\t\tTimeout: 180\n\t\t\t\tHandler: index.handler\n\t\t\t\tEnvironment:\n\t\t\t\t\tVariables:\n\t\t\t\t\t\tTABLE_NAME: data-table\n\t\t\tApi:\n\t\t\t\tEndpointConfiguration: REGIONAL\n\t\t\t\tCors: \"'www.example.com'\"\n\t\t\n\t\t\tSimpleTable:\n\t\t\t\tSSESpecification:\n\t\t\t\t\tSSEEnabled: true"
+			"Globals:\n\t\t\tFunction:\n\t\t\t\tRuntime: ${1|python3.7,python3.6,python2.7,python,ruby2.5,nodejs6.10,nodejs8.10,nodejs4.3,nodejs,dotnetcore2.0,dotnetcore2.1,dotnetcore1.0,dotnetcore,dotnet,go1.x,go,java8,java|}\n\t\t\t\tTimeout: 180\n\t\t\t\tHandler: index.handler\n\t\t\t\tEnvironment:\n\t\t\t\t\tVariables:\n\t\t\t\t\t\tTABLE_NAME: data-table\n\t\t\tApi:\n\t\t\t\tEndpointConfiguration: REGIONAL\n\t\t\t\tCors: \"'www.example.com'\"\n\t\t\n\t\t\tSimpleTable:\n\t\t\t\tSSESpecification:\n\t\t\t\t\tSSEEnabled: true"
 		],
 		"description": "SAM Globals section"
 	},
@@ -30,7 +30,7 @@
 		"scope": "yaml",
 		"prefix": "sam-function",
 		"body": [
-		"# https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction\nLambdaFunction:\n\tType: AWS::Serverless::Function\n\tProperties:\n\t\tHandler: index.js\n\t\tRuntime: ${1|nodejs,nodejs4.3,nodejs6.10,nodejs8.10,java8,python2.7,python3.6,dotnetcore1.0,dotnetcore2.0,dotnetcore2.1,nodejs4.3-edge,go1.x|}\n\t\tCodeUri: './artefacts/my-function.zip'\n\t\tDescription: Creates thumbnails of uploaded images\n\t\tMemorySize: 1024\n\t\tTimeout: 15\n\t\tTracing: true\n\t\tPolicies:\n\t\t- AWSLambdaExecute # Managed Policy\n\t\t- Version: '2012-10-17' # Policy Document\n\t\t\tStatement:\n\t\t\t\t- Effect: Allow\n\t\t\t\t\tAction:\n\t\t\t\t\t\t- s3:GetObject\n\t\t\t\t\t\t- s3:GetObjectACL\n\t\t\t\t\tResource: 'arn:aws:s3:::my-bucket/*'\n\t\tEnvironment:\n\t\t\tVariables:\n\t\t\t\tTABLE_NAME: my-table\n\t\tEvents:\n\t\t\tPhotoUpload:\n\t\t\t\tType: S3\n\t\t\t\tProperties:\n\t\t\t\t\tBucket: my-photo-bucket\n\t\tTags:\n\t\t\tenvironment: ${3|dev,test,prod|}\n\t\t\tproject: proj123\n\t\t\tcostcentre: abc123"			
+		"# https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction\n$1Function:\n\tType: AWS::Serverless::Function\n\tProperties:\n\t\tHandler: $2\n\t\tRuntime: ${3|python3.7,python3.6,python2.7,python,ruby2.5,nodejs6.10,nodejs8.10,nodejs4.3,nodejs,dotnetcore2.0,dotnetcore2.1,dotnetcore1.0,dotnetcore,dotnet,go1.x,go,java8,java|}\n\t\tCodeUri: './artefacts/my-function.zip'\n\t\tDescription: Creates thumbnails of uploaded images\n\t\tMemorySize: 1024\n\t\tTimeout: 15\n\t\tTracing: true\n\t\tPolicies:\n\t\t- AWSLambdaExecute # Managed Policy\n\t\t- Version: '2012-10-17' # Policy Document\n\t\t\tStatement:\n\t\t\t\t- Effect: Allow\n\t\t\t\t\tAction:\n\t\t\t\t\t\t- s3:GetObject\n\t\t\t\t\t\t- s3:GetObjectACL\n\t\t\t\t\tResource: 'arn:aws:s3:::my-bucket/*'\n\t\tEnvironment:\n\t\t\tVariables:\n\t\t\t\tTABLE_NAME: my-table\n\t\tEvents:\n\t\t\tPhotoUpload:\n\t\t\t\tType: S3\n\t\t\t\tProperties:\n\t\t\t\t\tBucket: my-photo-bucket\n\t\tTags:\n\t\t\tenvironment: ${4|dev,test,prod|}\n\t\t\tproject: proj123\n\t\t\tcostcentre: abc123"			
 		],
 		"description": "AWS::Serverless::Function"
 	},
@@ -39,7 +39,7 @@
 		"scope": "yaml",
 		"prefix": "sam-api",
 		"body": [
-		"#https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessapi\nApiGatewayApi:\n\tType: AWS::Serverless::Api\n\tProperties:\n\t\tStageName: Prod\n\t\tDefinitionUri: swagger.yml"
+		"# https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessapi\nApiGatewayApi:\n\tType: AWS::Serverless::Api\n\tProperties:\n\t\tStageName: Prod\n\t\tDefinitionUri: swagger.yml"
 		],
 		"description": "AWS::Serverless::Api"
 	},
@@ -48,7 +48,7 @@
 		"scope": "yaml",
 		"prefix": "sam-simpletable",
 		"body": [
-		"#https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable\nSimpleTable:\n\tType: AWS::Serverless::SimpleTable\n\tProperties:\n\t\tTableName: $1\n\t\tPrimaryKey:\n\t\t\tName: id\n\t\t\tType: String\n\t\tProvisionedThroughput:\n\t\t\tReadCapacityUnits: 5\n\t\t\tWriteCapacityUnits: 5\n\t\tTags:\n\t\t\tenvironment: ${3|dev,test,prod|}\n\t\t\tproject: proj123\n\t\t\tcostcentre: abc123\n\t\tSSESpecification:\n\t\t\tSSEEnabled: true"
+		"# https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable\nSimpleTable:\n\tType: AWS::Serverless::SimpleTable\n\tProperties:\n\t\tTableName: $1\n\t\tPrimaryKey:\n\t\t\tName: id\n\t\t\tType: String\n\t\tProvisionedThroughput:\n\t\t\tReadCapacityUnits: 5\n\t\t\tWriteCapacityUnits: 5\n\t\tTags:\n\t\t\tenvironment: ${3|dev,test,prod|}\n\t\t\tproject: proj123\n\t\t\tcostcentre: abc123\n\t\tSSESpecification:\n\t\t\tSSEEnabled: true"
 			],
 		"description": "AWS::Serverless::SimpleTable"
 	},
@@ -61,4 +61,32 @@
 			],
 		"description": "SAM Template"
 	},
+
+	"sam-function-policies": {
+		"scope": "yaml",
+		"prefix": "sam-policy",
+		"body": [
+		"${1|- SQSPollerPolicy:\n\tQueueName: name,- LambdaInvokePolicy:\n\tFunctionName: name,- CloudWatchPutMetricPolicy: {},- EC2DescribePolicy {},- DynamoDBCrudPolicy:\n\tTableName: name,- DynamoDBReadPolicy:\n\tTableName: name,- DynamoDBReconfigurePolicy:\n\tTableName: name,- SESSendBouncePolicy:\n\t ,- ElasticsearchHttpPostPolicy:\n\t ,- S3ReadPolicy:\n\tBucketName: name,- S3CrudPolicy:\n\tBucketName: name,- AMIDescribePolicy: {},- CloudFormationDescribeStacksPolicy: {},- RekognitionNoDataAccessPolicy:\n\tCollectionId: id,- RekognitionReadPolicy:\n\tCollectionId: id,- RekognitionWriteOnlyAccessPolicy:\n\tCollectionId: id,- SQSSendMessagePolicy:\n\tQueueName: name,- SNSPublishMessagePolicy:\n\tTopicName: name,- VPCAccessPolicy: {},- DynamoDBStreamReadPolicy:\n\tTableName: name\nStreamName: name,- KinesisStreamReadPolicy:\n\tStreamName: name,- SESCrudPolicy:\n\tIdentityName: name,- SNSCrudPolicy:\n\tTopicName: name,- KinesisCrudPolicy:\n\tStreamName: name,- KMSDecryptPolicy:\n\tKeyId: id,- PollyFullAccessPolicy:\n\tLexiconName: name,- S3FullAccessPolicy:\n\tBucketName: name,- CodePipelineLambdaExecutionPolicy: {},- ServerlessRepoReadWriteAccessPolicy: {},- EC2CopyImagePolicy:\n\tImageId: id,- AWSSecretsManagerRotationPolicy:\n\tSecretArn: arn,- AWSSecretsManagerGetSecretValuePolicy:\n\tSecretArn: arn,- CodePipelineReadOnlyPolicy:\n\tPipelineName: name,- CloudWatchDashboardPolicy: {},- RekognitionFacesManagementPolicy:\n\tCollectionId: id,- RekognitionFacesPolicy:\n\tCollectionId: id,- RekognitionLabelsPolicy: {},- DynamoDBBackupFullAccessPolicy:\n\tTableName: name,- DynamoDBRestoreFromBackupPolicy:\n\tTableName: name,- ComprehendBasicAccessPolicy: {},- MobileAnalyticsWriteOnlyAccessPolicy: {},- PinpointEndpointAccessPolicy:\n\tPinpointApplicationId: id,- FirehoseWritePolicy:\n\tDeliveryStreamName: name,- FirehoseCrudPolicy:\n\tDeliveryStreamName: name,- EKSDescribePolicy: {},- CostExplorerReadOnlyPolicy: {},- OrganizationsListAccountsPolicy: {},- SESBulkTemplatedCrudPolicy:\n\tIdentityName: name|}"
+			],
+		"description": "SAM Policies"
+	},
+
+	"sam-application": {
+		"scope": "yaml",
+		"prefix": "sam-application",
+		"body": [
+			"# https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessapplication\nMyApplication:\n\tProperties:\n\t\tLocation:\n\t\t\tApplicationId: $1\n\t\t\tSemanticVersion: 1.0.0\n\t\tParameters:\n\t\t\tStringParameter: parameter-value\n\t\t\tIntegerParameter: 2"
+			],
+		"description": "SAM Application"
+	},
+
+	"sam-layer-version": {
+		"scope": "yaml",
+		"prefix": "sam-layer-version",
+		"body": [
+			"# https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesslayerversion\n$1Layer:\n\tType: AWS::Serverless::Function\n\tProperties:\n\t\tLayerName: $2\n\t\tDescription: $3\n\t\tContentUri: 's3://my-bucket/my-layer.zip'\n\t\tCompatibleRuntimes:\n\t\t\t- ${4|python3.7,python3.6,python2.7,python,ruby2.5,nodejs6.10,nodejs8.10,nodejs4.3,nodejs,dotnetcore2.0,dotnetcore2.1,dotnetcore1.0,dotnetcore,dotnet,go1.x,go,java8,java|}\n\t\tLicenseInfo: 'Available under the MIT-0 license.'\n\t\tRetentionPolicy: ${5|Retain,Delete|}"
+			],
+		"description": "SAM Layer Version"
+	},
+
 }
